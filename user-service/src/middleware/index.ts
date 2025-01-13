@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from "express";
 import { ApiError } from "../utils";
 
-const errorConverter: ErrorRequestHandler = (err, req, res, next) => {
+export const errorConverter: ErrorRequestHandler = (err, req, res, next) => {
     let error = err;
     if (!(error instanceof ApiError)) {
         const statusCode =
@@ -21,7 +21,7 @@ const errorConverter: ErrorRequestHandler = (err, req, res, next) => {
     next(error);
 };
 
-const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
     let { statusCode, message } = err;
     if (process.env.NODE_ENV === "production" && !err.isOperational) {
         statusCode = 500;
