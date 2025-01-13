@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { User, IUser } from "../database";
 import { ApiError, encryptPassword, isPasswordMatch } from "../utils";
@@ -15,6 +15,18 @@ const cookieOptions = {
     expires: expirationDate,
     secure: false,
     httpOnly: true,
+};
+
+const createToken = (user: IUser, res: Response) => {
+    const { name, email, id } = user;
+    const token = jwt.sign({ name, email, id }, jwtSecret, {
+        expiresIn: "1h",
+    });
+    if (config.env === "production") cookieOptions.secure = true;
+
+    res.cookie("jwt", token, cookieOptions);
+
+    return token;
 };
 
 const register = async (req: Request, res: Response) => {
@@ -44,23 +56,11 @@ const register = async (req: Request, res: Response) => {
             data: userData,
         });
     } catch (error: any) {
-        return res.status(error.statusCode || 500).json({
-            status: error.statusCode || 500,
+        return res.json({
+            status: 500,
             message: error.message || "Internal server error",
         });
     }
-};
-
-const createToken = (user: IUser, res: Response) => {
-    const { name, email, id } = user;
-    const token = jwt.sign({ name, email, id }, jwtSecret, {
-        expiresIn: "1h",
-    });
-    if (config.env === "production") cookieOptions.secure = true;
-
-    res.cookie("jwt", token, cookieOptions);
-
-    return token;
 };
 
 const login = async (req: Request, res: Response) => {
