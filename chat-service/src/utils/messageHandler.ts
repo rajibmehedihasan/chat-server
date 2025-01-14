@@ -1,5 +1,5 @@
 import { rabbitMQService } from "../services/RabbitMQService";
-import { userStatusStore } from "./userStatusStore";
+import { UserStatusStore } from "./userStatusStore";
 
 export const handleMessageReceived = async (
     senderName: string,
@@ -7,7 +7,7 @@ export const handleMessageReceived = async (
     receiverId: string,
     messageContent: string
 ) => {
-    const statusStore = userStatusStore.getInstance();
+    const statusStore = UserStatusStore.getInstance();
     const receiverIsOffline = !statusStore.isUserOnline(receiverId);
 
     if (receiverIsOffline) {
