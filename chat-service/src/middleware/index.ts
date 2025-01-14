@@ -26,7 +26,7 @@ export interface AuthRequest extends Request {
 
 const jwtSecret = config.JWT_SECRET as string;
 
-const authMiddleware = async (
+export const authMiddleware = async (
     req: AuthRequest,
     res: Response,
     next: NextFunction
