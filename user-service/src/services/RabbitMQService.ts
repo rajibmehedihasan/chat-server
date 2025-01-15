@@ -30,17 +30,22 @@ class RabbitMQService {
         this.channel.consume(this.requestQueue, async (msg) => {
             if (msg && msg.content) {
                 const { userId } = JSON.parse(msg.content.toString());
-                const userDetails = await getUserDetails(userId);
+                try {
+                    const userDetails = await getUserDetails(userId);
 
-                this.channel.sendToQueue(
-                    this.responseQueue,
-                    Buffer.from(JSON.stringify(userDetails)),
-                    {
-                        correlationId: msg.properties.correlationId,
-                    }
-                );
-
-                this.channel.ack(msg);
+                    this.channel.sendToQueue(
+                        this.responseQueue,
+                        Buffer.from(JSON.stringify(userDetails)),
+                        {
+                            correlationId: msg.properties.correlationId,
+                        }
+                    );
+                } catch (error) {
+                    console.error("Failed to process message:", error);
+                    // Optionally, send an error response back
+                } finally {
+                    this.channel.ack(msg);
+                }
             }
         });
     }
