@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { Message } from "../database";
 import MessageController from "../controllers/MessageController";
 import { authMiddleware } from "../middleware";
 
