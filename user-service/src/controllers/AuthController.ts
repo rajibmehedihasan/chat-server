@@ -63,6 +63,8 @@ const register = async (req: Request, res: Response) => {
     }
 };
 
+// write swagger documentation for the below function
+
 const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;

@@ -5,6 +5,10 @@ import { errorConverter, errorHandler } from "./middleware";
 import { connectDB } from "./database";
 import config from "./config/config";
 import { rabbitMQService } from "./services/RabbitMQService";
+import { setupSwagger } from "./swagger";
+import path from "path";
+import { readFileSync } from "fs";
+import swaggerUi from "swagger-ui-express";
 
 const app: Express = express();
 let server: Server.Server;
@@ -17,6 +21,14 @@ app.use(errorHandler);
 
 connectDB();
 
+// setupSwagger(app);
+
+// Load Swagger JSON file
+const swaggerFilePath = path.join(__dirname, "/swagger.json");
+const swaggerDocument = JSON.parse(readFileSync(swaggerFilePath, "utf8"));
+
+// Serve Swagger UI
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 server = app.listen(config.PORT, () => {
     console.log(`Server started at http://localhost:${config.PORT}`);
 });

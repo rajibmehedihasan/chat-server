@@ -1,0 +1,22 @@
+services:
+    # Your app container
+    app:
+        build: .
+        container_name: user-service
+        ports:
+            - "4000:4000" # Map container port 4000 to host port 4000
+        depends_on:
+            - mongo
+        environment:
+            - MONGO_URI=mongodb://mongo:27017/test # Connect to MongoDB container by service name
+
+    # MongoDB container
+    mongo:
+        image: mongo:latest # Use official MongoDB image
+        volumes:
+            - mongo-data:/data/db # Persist data between restarts
+        ports:
+            - "27017:27017" # Expose MongoDB port
+
+volumes:
+    mongo-data:
